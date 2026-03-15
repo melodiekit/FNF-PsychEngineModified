@@ -13,7 +13,6 @@ import states.TitleState;
 import crowplexus.iris.Iris;
 import psychlua.HScript.HScriptInfos;
 #end
-import psychlua.ScriptHandler;
 import mobile.backend.MobileScaleMode;
 import openfl.events.KeyboardEvent;
 import lime.system.System as LimeSystem;
@@ -87,20 +86,6 @@ class Main extends Sprite
 		FlxG.save.bind('funkin', CoolUtil.getSavePath());
 		Highscore.load();
 
-		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(psychlua.CallbackHandler.call)); #end
-		Controls.instance = new Controls();
-		ClientPrefs.loadDefaultKeys();
-		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
-		#if mobile
-		FlxG.signals.postGameStart.addOnce(() -> {
-			FlxG.scaleMode = new MobileScaleMode();
-		});
-		#end
-		addChild(new FlxGame(game.width, game.height, #if COPYSTATE_ALLOWED !CopyState.checkExistingFiles() ? CopyState : #end game.initialState, game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
-
-		Debugger.instance = new Debugger();
-		addChild(Debugger.instance);
-
 		#if HSCRIPT_ALLOWED
 		Iris.warn = function(x, ?pos:haxe.PosInfos) {
 			Iris.logLevel(WARN, x, pos);
@@ -117,7 +102,8 @@ class Main extends Sprite
 				msgInfo += '${newPos.lineNumber}:';
 			}
 			msgInfo += ' $x';
-			Debugger.instance.print('WARNING: $msgInfo', FlxColor.YELLOW);
+			if (PlayState.instance != null)
+				PlayState.instance.addTextToDebug('WARNING: $msgInfo', FlxColor.YELLOW);
 		}
 		Iris.error = function(x, ?pos:haxe.PosInfos) {
 			Iris.logLevel(ERROR, x, pos);
@@ -134,7 +120,8 @@ class Main extends Sprite
 				msgInfo += '${newPos.lineNumber}:';
 			}
 			msgInfo += ' $x';
-			Debugger.instance.print('ERROR: $msgInfo', FlxColor.RED);
+			if (PlayState.instance != null)
+				PlayState.instance.addTextToDebug('ERROR: $msgInfo', FlxColor.RED);
 		}
 		Iris.fatal = function(x, ?pos:haxe.PosInfos) {
 			Iris.logLevel(FATAL, x, pos);
@@ -151,9 +138,21 @@ class Main extends Sprite
 				msgInfo += '${newPos.lineNumber}:';
 			}
 			msgInfo += ' $x';
-			Debugger.instance.print('FATAL: $msgInfo', 0xFFBB0000);
+			if (PlayState.instance != null)
+				PlayState.instance.addTextToDebug('FATAL: $msgInfo', 0xFFBB0000);
 		}
 		#end
+
+		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(psychlua.CallbackHandler.call)); #end
+		Controls.instance = new Controls();
+		ClientPrefs.loadDefaultKeys();
+		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
+		#if mobile
+		FlxG.signals.postGameStart.addOnce(() -> {
+			FlxG.scaleMode = new MobileScaleMode();
+		});
+		#end
+		addChild(new FlxGame(game.width, game.height, #if COPYSTATE_ALLOWED !CopyState.checkExistingFiles() ? CopyState : #end game.initialState, game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 
 		fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
 		addChild(fpsVar);
@@ -208,8 +207,6 @@ class Main extends Sprite
 			if (FlxG.game != null)
 			resetSpriteCache(FlxG.game);
 		});
-
-		ScriptHandler.init();
 	}
 
 	static function resetSpriteCache(sprite:Sprite):Void {

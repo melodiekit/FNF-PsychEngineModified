@@ -61,8 +61,6 @@ import mobile.backend.StorageUtil;
 
 import backend.ui.*; //Psych-UI
 
-import debug.Debugger;
-
 import objects.Alphabet;
 import objects.BGSprite;
 
