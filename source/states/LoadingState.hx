@@ -601,13 +601,13 @@ class LoadingState extends MusicBeatState
 				{
 					final songNotes: Array<Dynamic> = section.sectionNotes[i];
 					var spawnTime: Float = songNotes[0];
-					var noteColumn: Int = Std.int(songNotes[1] % totalColumns);
+					var noteColumn: Int = Std.int(songNotes[1] % 4);
 					var holdLength: Float = songNotes[2];
 					var noteType: String = !Std.isOfType(songNotes[3], String) ? Note.defaultNoteTypes[songNotes[3]] : songNotes[3];
 					if (Math.isNaN(holdLength))
 						holdLength = 0.0;
 
-					var gottaHitNote:Bool = (songNotes[1] < totalColumns);
+					var gottaHitNote:Bool = (songNotes[1] < 4);
 
 					if (i != 0) {
 						// CLEAR ANY POSSIBLE GHOST NOTES
@@ -663,7 +663,7 @@ class LoadingState extends MusicBeatState
 								if(oldNote.isSustainNote)
 								{
 									oldNote.scale.y *= Note.SUSTAIN_SIZE / oldNote.frameHeight;
-									oldNote.scale.y /= playbackRate;
+									oldNote.scale.y /= ClientPrefs.getGameplaySetting('songspeed');
 									oldNote.resizeByRatio(curStepCrochet / Conductor.stepCrochet);
 								}
 
@@ -672,7 +672,7 @@ class LoadingState extends MusicBeatState
 							}
 							else if(oldNote.isSustainNote)
 							{
-								oldNote.scale.y /= playbackRate;
+								oldNote.scale.y /= ClientPrefs.getGameplaySetting('songspeed');
 								oldNote.resizeByRatio(curStepCrochet / Conductor.stepCrochet);
 							}
 
