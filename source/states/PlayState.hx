@@ -157,6 +157,7 @@ class PlayState extends MusicBeatState
 	public var gf:Character = null;
 	public var boyfriend:Character = null;
 
+	public static var cachedNotes:Array<Note> = [];
 	public var notes:FlxTypedGroup<Note>;
 	public var unspawnNotes:Array<Note> = [];
 	public var eventNotes:Array<EventNote> = [];
@@ -184,6 +185,7 @@ class PlayState extends MusicBeatState
 
 	public var ratingsData:Array<Rating> = Rating.loadDefault();
 
+	public static var generatedChart:Bool = false;
 	private var generatedMusic:Bool = false;
 	public var endingSong:Bool = false;
 	public var startingSong:Bool = false;
@@ -1360,6 +1362,11 @@ class PlayState extends MusicBeatState
 		}
 		catch(e:Dynamic) {}
 
+		if (generatedChart && cachedNotes.length > 0) {
+			unspawnNotes = cachedNotes.copy();
+			cachedNotes = [];
+		}
+		else {
 		var oldNote:Note = null;
 		var sectionsData:Array<SwagSection> = PlayState.SONG.notes;
 		var ghostNotesCaught:Int = 0;
@@ -1476,6 +1483,8 @@ class PlayState extends MusicBeatState
 
 				oldNote = swagNote;
 			}
+		}
+		generatedChart = true;
 		}
 		trace('["${SONG.song.toUpperCase()}" CHART INFO]: Ghost Notes Cleared: $ghostNotesCaught');
 		for (event in songData.events) //Event Notes
