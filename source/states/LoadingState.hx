@@ -585,6 +585,7 @@ class LoadingState extends MusicBeatState
 
 			threadsMax++;
 			threadPool.run(()->{
+			try {
 			var oldNote:Note = null;
 			var sectionsData:Array<SwagSection> = song.notes;
 			var ghostNotesCaught:Int = 0;
