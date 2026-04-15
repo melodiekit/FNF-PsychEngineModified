@@ -37,19 +37,19 @@ class CreditsState extends MusicBeatState
 		#if MODS_ALLOWED
 		for (mod in Mods.parseList().enabled) pushModCreditsToList(mod);
 		#end
-		var desc:String = '"Yummy yum"';
-		var color:String = '81d7ff';
-		var larryCred:Array<String> = ['larryfrosty'];
+		var desc:String = '"Meow meow meow :3"';
+		var color:String = 'c0ebff';
+		var melodieCred:Array<String> = ['melodiekit'];
 		if (FlxG.random.bool(10)) {
-			larryCred = FlxG.random.getObject(baldipliers, [90, 25, 5]) ?? ['larryfrosty'];
-			if (larryCred.length > 1) {
-				desc = '"your pliers are ${larryCred[1]}."';
-				color = larryCred[2];
+			melodieCred = FlxG.random.getObject(baldipliers, [90, 25, 5]) ?? melodieCred;
+			if (melodieCred.length > 1) {
+				desc = '"keep your pliers ${melodieCred[1]}."';
+				color = melodieCred[2];
 			}
 		}
 		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Credits Test'],
-			['LarryFrosty', larryCred[0], 'Psych Spoon\n${desc}', 'https://youtube.com/@larryfrosty', color],
+			['melodiekit', melodieCred[0], 'Psych Spoon\n${desc}', 'https://youtube.com/@melodiekit', color],
 			[''],
 			['Mobile Porting Team'],
 			['HomuHomu833',			'homura',             'Head Porter of Psych Engine and Author of linc_luajit-rewriten',                       'https://youtube.com/@HomuHomu833',		'FFE7C0'],
